@@ -1,0 +1,46 @@
+
+tvdb:
+  apikey: 5B59A483296A1C22
+
+#torrent.destination=D\:\\downloads\\torrents
+#torrent.password=t0nys1
+#show.apikey=5B59A483296A1C22
+#show.destination=D\:\\to watch\\ours
+#torrent.username=admin
+
+uTorrent:
+  username: admin
+  password: t0nys1
+  api: http://localhost:64717/gui/
+
+files:
+  torrentDir: D:/downloads/torrents
+  intermediateDir: D:/to watch/ours
+  destinationDir: Z:/
+
+xbmc:
+  username: xbmc
+  password: t0nys1
+  api: http://192.168.1.12/jsonrpc
+
+database:
+  url: jdbc:h2:./target/app
+  driverClass: org.h2.Driver
+  user: sa
+  password: sa
+
+  properties:
+    hibernate.hbm2ddl.auto: update #create #
+    hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+httpClient:
+  connectionTimeout: 5000ms
+  timeout: 5000ms
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8082
+  adminConnectors:
+    - type: http
+      port: 8083

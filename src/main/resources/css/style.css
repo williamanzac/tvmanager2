@@ -1,0 +1,106 @@
+body {
+	padding-top: 70px;
+}
+
+.actions {
+	visibility: hidden;
+	z-index: 100;
+}
+
+.tvshow, .torrent {
+	padding: 10px 15px;
+	border: solid 1px #1c1e22;
+	border-bottom: none;
+	vertical-align: middle;
+}
+
+.tvshow:FIRST-CHILD, .torrent:FIRST-CHILD {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+.tvshow:LAST-CHILD, .torrent:LAST-CHILD {
+	border-bottom: solid 1px #1c1e22;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	margin-bottom: 20px;
+}
+
+.tvshow:HOVER .actions, .torrent:HOVER .actions {
+	visibility: visible;
+}
+
+.tvshow:HOVER, .torrent:HOVER {
+	background-color: #49515a;
+}
+
+.tvshow .carousel {
+	display: none;
+}
+
+.tvshow .carousel .carousel-inner img {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.expanded, table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
+	background-color: #49515a;
+}
+
+.expanded:HOVER {
+	background-color: #3e444c;
+}
+
+.showContent, .torrentInfo {
+	display: none;
+	margin-top: 1em;
+}
+
+.expanded .showContent, .expanded .torrentInfo {
+	display: inherit;
+}
+
+.expanded .carousel {
+	display: inherit;
+}
+
+.expanded b {
+	display: none;
+}
+
+.episodes, .tab-content {
+	background-color: #2e3338;
+	max-height: 20em;
+	min-height: 20em;
+	overflow: auto;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.tvModal .modal-content .modal-body .row, .torrentModal .modal-content .modal-body .row {
+	max-height: 20em;
+	overflow: auto;
+}
+
+.episodes table {
+	margin-bottom: 0px;
+}
+
+.detail {
+	margin-bottom: 0px;
+}
+
+.detail .panel-body {
+	max-height: 17em;
+	overflow: auto;
+}
+
+.torrentTitle {
+	overflow: hidden;
+}
+
+.treeview .list-group {
+	margin-bottom: 0px;
+	box-shadow: none;
+}
+
