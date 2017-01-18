@@ -2,6 +2,7 @@ package nz.co.wing.tvmanager.resource;
 
 import io.dropwizard.hibernate.UnitOfWork;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -18,11 +19,9 @@ import javax.ws.rs.core.UriBuilder;
 
 import nz.co.wing.tvmanager.model.Torrent;
 import nz.co.wing.tvmanager.model.TorrentFile;
+import nz.co.wing.tvmanager.model.TorrentState;
 import nz.co.wing.tvmanager.service.ServiceException;
 import nz.co.wing.tvmanager.service.TorrentService;
-import nz.co.wing.tvmanager.view.TorrentFilesView;
-import nz.co.wing.tvmanager.view.TorrentListView;
-import nz.co.wing.tvmanager.view.TorrentSearchView;
 
 import com.codahale.metrics.annotation.Timed;
 
@@ -43,8 +42,28 @@ public class TorrentResource {
 	@UnitOfWork
 	public Response list() {
 		final List<Torrent> list = service.listTorrents();
-		final TorrentListView view = new TorrentListView(list);
-		return Response.ok(view).build();
+		Collections.sort(list, (o1, o2) -> {
+			final boolean downloading1 = o1.getState() == TorrentState.DOWNLOADING;
+			final boolean downloading2 = o2.getState() == TorrentState.DOWNLOADING;
+			if (downloading1 && !downloading2) {
+				return -1;
+			}
+			if (!downloading1 && downloading2) {
+				return 1;
+			}
+
+			final boolean queued1 = o1.getState() == TorrentState.DOWNLOADING_QUEUED;
+			final boolean queued2 = o2.getState() == TorrentState.DOWNLOADING_QUEUED;
+			if (queued1 && !queued2) {
+				return -1;
+			}
+			if (!queued1 && queued2) {
+				return 1;
+			}
+
+			return Float.compare(o2.getPercentComplete(), o1.getPercentComplete());
+		});
+		return Response.ok(list).build();
 	}
 
 	@POST
@@ -103,8 +122,7 @@ public class TorrentResource {
 	@Path("/search")
 	public Response search(final @QueryParam("s") String search) throws ServiceException {
 		final List<Torrent> list = service.findTorrents(search);
-		final TorrentSearchView view = new TorrentSearchView(list);
-		return Response.ok(view).build();
+		return Response.ok(list).build();
 	}
 
 	@GET
@@ -113,7 +131,6 @@ public class TorrentResource {
 	@Path("/{hash}/files")
 	public Response getFiles(final @PathParam("hash") String hash) throws ServiceException {
 		final List<TorrentFile> list = service.getFiles(hash);
-		final TorrentFilesView view = new TorrentFilesView(list);
-		return Response.ok(view).build();
+		return Response.ok(list).build();
 	}
 }

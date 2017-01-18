@@ -6,8 +6,15 @@ function zeroPad(n, length) {
 	return s;
 };
 
-function torrentPercent(hash, torrentMap) {
-	var value = torrentMap[hash];
+function torrentPercent(hash, torrents) {
+	var value = 0;
+	if (torrents != null) {
+		torrents.forEach(function(t) {
+			if (t.hash == hash) {
+				value = t.percentComplete;
+			}
+		});
+	}
 	return value;
 };
 
@@ -55,7 +62,7 @@ function ShowsModel() {
 	self.tvShows = ko.observableArray([]);
 	self.chosenShow = ko.observable();
 	self.episodes = ko.observableArray([]);
-	self.torrentMap = new Object();
+	self.torrents = ko.observableArray([]);
 	self.tvModalVisible = ko.observable(false);
 	self.chosenEpisode = ko.observable();
 	self.episode = ko.observable();
@@ -94,7 +101,7 @@ function ShowsModel() {
 		self.tvShows([]);
 		self.showTvModal();
 		$.getJSON("/series/search?s=" + self.showName(), function(data) {
-			self.tvShows(data.data);
+			self.tvShows(data);
 		});
 	};
 	self.addShow = function(data, event) {
@@ -114,13 +121,15 @@ function ShowsModel() {
 		location.hash = "Shows/" + data.id;
 	};
 	self.getSeriesData = function() {
+		$.getJSON("/torrents", function(data) {
+			self.torrents(data);
+		});
 		$.getJSON("/series/" + self.chosenShow() + "/episodes", function(data) {
-			self.torrentMap = data.torrentMap;
-			self.episodes(data.episodes);
+			self.episodes(data);
 		});
 		$.getJSON("/series/" + self.chosenShow() + "/banners", function(data) {
 			var banners = new Array();
-			data.banners.seriesList.forEach(function(b) {
+			data.seriesList.forEach(function(b) {
 				if (b.bannerType == "SERIES") {
 					banners.push(b);
 				}
@@ -143,7 +152,7 @@ function ShowsModel() {
 		mainModel.torrents.showTorrentModal();
 		self.chosenEpisode(episode.id);
 		$.getJSON("/episodes/" + episode.id + "/search", function(data) {
-			mainModel.torrents.foundTorrents(data.data);
+			mainModel.torrents.foundTorrents(data);
 		});
 	};
 	self.removeEpisode = function(episode, event) {
@@ -161,7 +170,7 @@ function ShowsModel() {
 	};
 	self.getEpisodeData = function() {
 		$.getJSON("/episodes/" + self.chosenEpisode(), function(data) {
-			self.episode(data.episode);
+			self.episode(data);
 		});
 	};
 };
@@ -212,12 +221,12 @@ function TorrentsModel() {
 		self.foundTorrents([]);
 		self.showTorrentModal();
 		$.getJSON("/torrents/search?s=" + self.torrentName(), function(data) {
-			self.foundTorrents(data.data);
+			self.foundTorrents(data);
 		});
 	};
 	self.getTorrents = function() {
 		$.getJSON("/torrents", function(data) {
-			self.torrents(data.list);
+			self.torrents(data);
 		});
 	};
 	self.openTorrent = function(data) {
@@ -225,7 +234,7 @@ function TorrentsModel() {
 	};
 	self.getTorrentData = function() {
 		$.getJSON("/torrents/" + self.chosenTorrent() + "/files", function(data) {
-			self.torrentFiles(data.files);
+			self.torrentFiles(data);
 		});
 	};
 	self.refreshTorrents = function() {

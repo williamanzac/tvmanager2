@@ -11,11 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import nz.co.wing.tvmanager.view.FileManagerView;
-import nz.co.wing.tvmanager.view.TorrentManagerView;
-import nz.co.wing.tvmanager.view.TvManagerView;
-import nz.co.wing.tvmanager.view.XBMCView;
-
 import org.h2.util.IOUtils;
 
 @Path("/")
@@ -67,33 +62,5 @@ public class UIResource {
 		};
 
 		return Response.ok(stream).build();
-	}
-
-	@GET
-	@Path("ui/shows")
-	@Produces(MediaType.TEXT_HTML)
-	public Response getUI() {
-		return Response.ok(new TvManagerView()).build();
-	}
-
-	@GET
-	@Path("ui/torrents")
-	@Produces(MediaType.TEXT_HTML)
-	public Response getTorrentUI() {
-		return Response.ok(new TorrentManagerView()).build();
-	}
-
-	@GET
-	@Path("ui/files")
-	@Produces(MediaType.TEXT_HTML)
-	public Response getFileUI() {
-		return Response.ok(new FileManagerView()).build();
-	}
-
-	@GET
-	@Path("ui/xbmc")
-	@Produces(MediaType.TEXT_HTML)
-	public Response getXBMCUI() {
-		return Response.ok(new XBMCView()).build();
 	}
 }

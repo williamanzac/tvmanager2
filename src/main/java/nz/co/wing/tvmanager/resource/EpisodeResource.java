@@ -21,9 +21,6 @@ import nz.co.wing.tvmanager.model.EpisodeState;
 import nz.co.wing.tvmanager.model.Torrent;
 import nz.co.wing.tvmanager.service.EpisodeService;
 import nz.co.wing.tvmanager.service.ServiceException;
-import nz.co.wing.tvmanager.view.EpisodeView;
-import nz.co.wing.tvmanager.view.TorrentSearchView;
-
 import com.codahale.metrics.annotation.Timed;
 
 @Path("/episodes")
@@ -60,8 +57,7 @@ public class EpisodeResource {
 	@Path("/{id}")
 	public Response read(final @PathParam("id") String id) {
 		final Episode read = episodeService.readEpisode(id);
-		final EpisodeView view = new EpisodeView(read);
-		return Response.ok(view).build();
+		return Response.ok(read).build();
 	}
 
 	@GET
@@ -70,8 +66,7 @@ public class EpisodeResource {
 	@Path("/{id}/search")
 	public Response search(final @PathParam("id") String id) throws ServiceException {
 		final List<Torrent> list = episodeService.searchEpisode(id);
-		final TorrentSearchView view = new TorrentSearchView(list);
-		return Response.ok(view).build();
+		return Response.ok(list).build();
 	}
 
 	@POST

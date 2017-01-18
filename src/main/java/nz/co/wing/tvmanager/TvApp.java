@@ -120,7 +120,7 @@ public class TvApp extends Application<AppConfiguration> {
 		final FilesService filesService = new FilesService(configuration, fileTaskDAO);
 		final XBMCService xbmcService = new XBMCService(xbmcClient, xbmcConfiguration);
 
-		final SeriesResource seriesResource = new SeriesResource(seriesService, episodeService, torrentService);
+		final SeriesResource seriesResource = new SeriesResource(seriesService, episodeService);
 		final UIResource uiResource = new UIResource();
 		final EpisodeResource episodeResource = new EpisodeResource(episodeService);
 		final TorrentResource torrentResource = new TorrentResource(torrentService);

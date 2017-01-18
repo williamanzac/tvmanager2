@@ -2,6 +2,7 @@ package nz.co.wing.tvmanager.resource;
 
 import io.dropwizard.hibernate.UnitOfWork;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -19,15 +20,9 @@ import javax.ws.rs.core.UriBuilder;
 import nz.co.wing.tvmanager.model.Banners;
 import nz.co.wing.tvmanager.model.Episode;
 import nz.co.wing.tvmanager.model.Series;
-import nz.co.wing.tvmanager.model.Torrent;
 import nz.co.wing.tvmanager.service.EpisodeService;
 import nz.co.wing.tvmanager.service.SeriesService;
 import nz.co.wing.tvmanager.service.ServiceException;
-import nz.co.wing.tvmanager.service.TorrentService;
-import nz.co.wing.tvmanager.view.BannersView;
-import nz.co.wing.tvmanager.view.EpisodeListView;
-import nz.co.wing.tvmanager.view.SeriesListView;
-import nz.co.wing.tvmanager.view.SeriesSearchView;
 
 import com.codahale.metrics.annotation.Timed;
 
@@ -38,14 +33,11 @@ public class SeriesResource {
 
 	private final SeriesService seriesService;
 	private final EpisodeService episodeService;
-	private final TorrentService torrentService;
 
-	public SeriesResource(final SeriesService seriesService, final EpisodeService episodeService,
-			final TorrentService torrentService) {
+	public SeriesResource(final SeriesService seriesService, final EpisodeService episodeService) {
 		super();
 		this.seriesService = seriesService;
 		this.episodeService = episodeService;
-		this.torrentService = torrentService;
 	}
 
 	@GET
@@ -54,8 +46,7 @@ public class SeriesResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response listHTML() {
 		final List<Series> list = seriesService.list();
-		final SeriesListView view = new SeriesListView(list);
-		return Response.ok(view).build();
+		return Response.ok(list).build();
 	}
 
 	@GET
@@ -72,8 +63,7 @@ public class SeriesResource {
 	@Path("/search")
 	public Response search(final @QueryParam("s") String search) throws ServiceException {
 		final List<Series> list = seriesService.search(search);
-		final SeriesSearchView view = new SeriesSearchView(list);
-		return Response.ok(view).build();
+		return Response.ok(list).build();
 	}
 
 	@POST
@@ -115,9 +105,27 @@ public class SeriesResource {
 	@Path("/{id}/episodes")
 	public Response listEpisodes(final @PathParam("id") String id) throws ServiceException {
 		final List<Episode> episodes = episodeService.listEpisodes(id);
-		final List<Torrent> torrents = torrentService.listTorrents();
-		final EpisodeListView view = new EpisodeListView(episodes, torrents);
-		return Response.ok(view).build();
+		Collections.sort(episodes, (o1, o2) -> {
+			final int s1 = o1.getSeasonNumber();
+			final int s2 = o2.getSeasonNumber();
+			final int e1 = o1.getEpisodeNumber();
+			final int e2 = o2.getEpisodeNumber();
+			if (s1 > s2) {
+				return -1;
+			}
+			if (s2 > s1) {
+				return 1;
+			}
+			if (e1 > e2) {
+				return -1;
+			}
+			if (e2 > e1) {
+				return 1;
+			}
+			return 0;
+		});
+
+		return Response.ok(episodes).build();
 	}
 
 	@GET
@@ -126,7 +134,6 @@ public class SeriesResource {
 	@Path("/{id}/banners")
 	public Response listBanners(final @PathParam("id") String id) throws ServiceException {
 		final Banners banners = seriesService.banners(id);
-		final BannersView view = new BannersView(banners);
-		return Response.ok(view).build();
+		return Response.ok(banners).build();
 	}
 }

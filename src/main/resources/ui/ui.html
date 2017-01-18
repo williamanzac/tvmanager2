@@ -296,7 +296,7 @@
 					<div class="panel-heading clearfix">
 						<h3 class="panel-title">File Tasks</h3>
 					</div>
-					<div class="panel-body" data-bind="foreach: files.fileTasks">
+					<div id="fileTasks" class="panel-body" data-bind="foreach: files.fileTasks">
 						<div data-bind="progress: {value: Number($data.percentComplete.toFixed(2)), text: getFilename($data.source), textHidden: false}"></div>
 					</div>
 				</div>
@@ -389,7 +389,7 @@
 					<div class="panel-heading clearfix">
 						<h3 class="panel-title">Playlist</h3>
 					</div>
-					<div class="panel-body">
+					<div id="playlist" class="panel-body">
 						<ul class="nav nav-stacked" data-bind="foreach: $root.xbmc.playlist">
 							<li data-bind="text: $data.label"></li>
 						</ul>
