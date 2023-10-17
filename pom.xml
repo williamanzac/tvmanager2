@@ -8,7 +8,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.13.1</junit.version>
-		<dropwizard.version>2.1.6</dropwizard.version>
+		<dropwizard.version>3.0.2</dropwizard.version>
 	</properties>
 
 	<dependencies>
